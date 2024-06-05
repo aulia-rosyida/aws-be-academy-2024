@@ -1,6 +1,36 @@
 const { nanoid } = require("nanoid");
 const books = require("./books");
 
+const getAllBooksHandler = () => {
+  if (books.length > 0) {
+    const tempBooks = books.map((bookItem) => ({
+      id: bookItem.id,
+      name: bookItem.name,
+      publisher: bookItem.publisher,
+    }));
+
+    const response = h.response({
+      status: "success",
+      data: {
+        books: tempBooks,
+      },
+    });
+    response.code(200);
+
+    return response;
+  } else {
+    const response = h.response({
+      status: "success",
+      data: {
+        books: [],
+      },
+    });
+    response.code(200);
+
+    return response;
+  }
+};
+
 const addBookHandler = (request, h) => {
   const {
     name,
@@ -78,4 +108,4 @@ const addBookHandler = (request, h) => {
   }
 };
 
-module.exports = { addBookHandler };
+module.exports = { addBookHandler, getAllBooksHandler };
