@@ -1,6 +1,42 @@
 const { nanoid } = require("nanoid");
 const books = require("./books");
 
+const getDetailBookHandler = (request, h) => {
+  const { bookId } = request.params;
+
+  const book = books.filter((item) => item.id === bookId)[0];
+  if (book !== undefined) {
+    const response = h.response({
+      status: "success",
+      data: {
+        book: {
+          id: book.id,
+          name: book.name,
+          year: book.year,
+          author: book.author,
+          summary: book.summary,
+          publisher: book.publisher,
+          pageCount: book.pageCount,
+          readPage: book.readPage,
+          finished: book.finished,
+          reading: book.reading,
+          insertedAt: book.insertedAt,
+          updatedAt: book.updatedAt,
+        },
+      },
+    });
+    response.code(200);
+    return response;
+  } else {
+    const response = h.response({
+      status: "fail",
+      message: "Buku tidak ditemukan",
+    });
+    response.code(404);
+    return response;
+  }
+};
+
 const getAllBooksHandler = () => {
   if (books.length > 0) {
     const tempBooks = books.map((bookItem) => ({
@@ -108,4 +144,4 @@ const addBookHandler = (request, h) => {
   }
 };
 
-module.exports = { addBookHandler, getAllBooksHandler };
+module.exports = { addBookHandler, getAllBooksHandler, getDetailBookHandler };
