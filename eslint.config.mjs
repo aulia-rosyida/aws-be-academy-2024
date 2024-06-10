@@ -1,25 +1,36 @@
-import globals from "globals";
-import pluginJs from "@eslint/js";
+import globals from 'globals';
+import pluginJs from '@eslint/js';
+import { FlatCompat } from '@eslint/eslintrc';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// mimic CommonJS variables -- not needed if using CommonJS
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+});
 
 export default [
+  ...compat.extends('airbnb'),
   {
-    files: ["**/*.js"],
+    files: ['**/*.js'],
     languageOptions: {
-      sourceType: "commonjs",
+      sourceType: 'commonjs',
+      ecmaVersion: 12,
     },
     rules: {
-      noConsole: "off",
+      noConsole: 'off',
+      noElseReturn: 'off',
     },
-    extends: ["airbnb-base"],
   },
   {
     languageOptions: {
-      globals: globals.browser,
-    },
-  },
-  {
-    parserOptions: {
-      ecmaVersion: 12,
+      globals: {
+        ...globals.browser,
+        myCustomGlobal: 'readonly',
+      },
     },
   },
   pluginJs.configs.recommended,
