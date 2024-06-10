@@ -132,7 +132,7 @@ const getAllBooksHandler = (request, h) => {
     const { name, reading, finished } = request.query;
 
     const isNameQueried = name !== undefined;
-    // const isReadingQueried = reading !== undefined;
+    const isReadingQueried = reading !== undefined;
     // const isFinishedQueried = finished !== undefined;
 
     if (isNameQueried) {
@@ -156,64 +156,58 @@ const getAllBooksHandler = (request, h) => {
       response.code(200);
 
       return response;
+    } else if (isReadingQueried) {
+      if (reading === "0") {
+        var filteredBooks = books.filter((book) => book.reading === false);
+
+        const response = h.response({
+          status: "success",
+          data: {
+            books: filteredBooks.map((bookItem) => ({
+              id: bookItem.id,
+              name: bookItem.name,
+              publisher: bookItem.publisher,
+            })),
+          },
+        });
+        response.code(200);
+
+        return response;
+      } else if (reading === "1") {
+        var filteredBooks = books.filter((book) => book.reading === true);
+
+        const response = h.response({
+          status: "success",
+          data: {
+            books: filteredBooks.map((bookItem) => ({
+              id: bookItem.id,
+              name: bookItem.name,
+              publisher: bookItem.publisher,
+            })),
+          },
+        });
+        response.code(200);
+
+        return response;
+      } else {
+        const tempBooks = books.map((bookItem) => ({
+          id: bookItem.id,
+          name: bookItem.name,
+          publisher: bookItem.publisher,
+        }));
+
+        const response = h.response({
+          status: "success",
+          data: {
+            books: tempBooks,
+          },
+        });
+        response.code(200);
+
+        return response;
+      }
     }
-    // else if (isReadingQueried) {
-    //   if (reading === 0) {
-    //     var filteredBooks = books.filter((book) => book.reading === false);
-    //     console.log(filteredBooks);
-    //     console.log("Jumlah buku yg reading ===0 : ", filteredBooks.length);
-
-    //     const response = h.response({
-    //       status: "success",
-    //       data: {
-    //         books: filteredBooks.map((bookItem) => ({
-    //           id: bookItem.id,
-    //           name: bookItem.name,
-    //           publisher: bookItem.publisher,
-    //         })),
-    //       },
-    //     });
-    //     response.code(200);
-
-    //     return response;
-    //   } else if (reading === 1) {
-    //     var filteredBooks = books.filter((book) => book.reading === true);
-    //     console.log(filteredBooks);
-    //     console.log("Jumlah buku yg reading ===1 : ", filteredBooks.length);
-
-    //     const response = h.response({
-    //       status: "success",
-    //       data: {
-    //         books: filteredBooks.map((bookItem) => ({
-    //           id: bookItem.id,
-    //           name: bookItem.name,
-    //           publisher: bookItem.publisher,
-    //         })),
-    //       },
-    //     });
-    //     response.code(200);
-
-    //     return response;
-    //   } else {
-    //     console.log("FILTER READING bukan 0 atau 1, masuk ELSE");
-    //     const tempBooks = books.map((bookItem) => ({
-    //       id: bookItem.id,
-    //       name: bookItem.name,
-    //       publisher: bookItem.publisher,
-    //     }));
-    //     console.log("Jumlah ttp sama harusnya: ", tempBooks.length);
-
-    //     const response = h.response({
-    //       status: "success",
-    //       data: {
-    //         books: tempBooks,
-    //       },
-    //     });
-    //     response.code(200);
-
-    //     return response;
-    //   }
-    // } else if (isFinishedQueried) {
+    // else if (isFinishedQueried) {
     //   if (finished === 0) {
     //     var filteredBooks = books.filter((book) => book.finished === false);
     //     console.log(filteredBooks);
