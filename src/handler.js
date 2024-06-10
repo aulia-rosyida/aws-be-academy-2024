@@ -14,7 +14,7 @@ const deleteBookHandler = (request, h) => {
     response.code(404);
     return response;
   } else {
-    notes.splice(index, 1);
+    books.splice(index, 1);
     const response = h.response({
       status: "success",
       message: "Buku berhasil dihapus",
