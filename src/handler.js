@@ -54,7 +54,7 @@ const editDataBookHandler = (request, h) => {
         "Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount",
     });
 
-    response.code(404);
+    response.code(400);
     return response;
   } else {
     const index = books.findIndex((book) => book.id === bookId);
@@ -84,7 +84,7 @@ const editDataBookHandler = (request, h) => {
         status: "fail",
         message: "Gagal memperbarui buku. Id tidak ditemukan",
       });
-      response.code(400);
+      response.code(404);
       return response;
     }
   }
@@ -158,7 +158,6 @@ const getAllBooksHandler = (_, h) => {
 
 const addBookHandler = (request, h) => {
   if (request.payload !== null) {
-    console.log(request.payload);
     const {
       name,
       year,
@@ -201,7 +200,7 @@ const addBookHandler = (request, h) => {
       return response;
     } else if (newBook.readPage > newBook.pageCount) {
       const response = h.response({
-        status: "failed",
+        status: "fail",
         message:
           "Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount",
       });
