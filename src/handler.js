@@ -1,16 +1,16 @@
 const { nanoid } = require('nanoid');
 const books = require('./books');
 
-////// REUSABLE FUNCTION ////// 
-function fromattedBooks(books) {
-  return books.map((bookItem) => ({
+/* REUSABLE FUNCTION */
+function formattedBooks(rawBooks) {
+  return rawBooks.map((bookItem) => ({
     id: bookItem.id,
     name: bookItem.name,
     publisher: bookItem.publisher,
   }));
 }
 
-////// HANDLER FUNCTION ////// 
+/* HANDLER FUNCTION */
 const deleteBookHandler = (request, h) => {
   const { bookId } = request.params;
   const index = books.findIndex((book) => book.id === bookId);
@@ -139,7 +139,7 @@ const getAllBooksHandler = (request, h) => {
       const response = h.response({
         status: 'success',
         data: {
-          books: fromattedBooks(booksFilteredName),
+          books: formattedBooks(booksFilteredName),
         },
       });
       response.code(200);
@@ -150,7 +150,7 @@ const getAllBooksHandler = (request, h) => {
         const response = h.response({
           status: 'success',
           data: {
-            books: fromattedBooks(unreadingBooks),
+            books: formattedBooks(unreadingBooks),
           },
         });
         response.code(200);
@@ -160,7 +160,7 @@ const getAllBooksHandler = (request, h) => {
         const response = h.response({
           status: 'success',
           data: {
-            books: fromattedBooks(readingBooks),
+            books: formattedBooks(readingBooks),
           },
         });
         response.code(200);
@@ -170,7 +170,7 @@ const getAllBooksHandler = (request, h) => {
       const response = h.response({
         status: 'success',
         data: {
-          books:fromattedBooks(books),
+          books: formattedBooks(books),
         },
       });
       response.code(200);
@@ -181,7 +181,7 @@ const getAllBooksHandler = (request, h) => {
         const response = h.response({
           status: 'success',
           data: {
-            books: fromattedBooks(unfinishedBooks),
+            books: formattedBooks(unfinishedBooks),
           },
         });
         response.code(200);
@@ -191,7 +191,7 @@ const getAllBooksHandler = (request, h) => {
         const response = h.response({
           status: 'success',
           data: {
-            books: fromattedBooks(finishedBooks),
+            books: formattedBooks(finishedBooks),
           },
         });
         response.code(200);
@@ -200,7 +200,7 @@ const getAllBooksHandler = (request, h) => {
       const response = h.response({
         status: 'success',
         data: {
-          books: fromattedBooks(books),
+          books: formattedBooks(books),
         },
       });
       response.code(200);
@@ -209,7 +209,7 @@ const getAllBooksHandler = (request, h) => {
     const response = h.response({
       status: 'success',
       data: {
-        books: fromattedBooks(books),
+        books: formattedBooks(books),
       },
     });
     response.code(200);
