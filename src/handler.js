@@ -1,6 +1,59 @@
 const { nanoid } = require('nanoid');
 const books = require('./books');
 
+/* CONSTANT */
+const responseFailInvalidId = {
+  status: 'fail',
+  message: 'Buku gagal dihapus. Id tidak ditemukan',
+};
+
+const responseFailEditBookInvalidId = {
+  status: 'fail',
+  message: 'Gagal memperbarui buku. Id tidak ditemukan',
+};
+
+const responseFailInvalidName = {
+  status: 'fail',
+  message: 'Gagal memperbarui buku. Mohon isi nama buku',
+};
+
+const responseFailInvalidPage = {
+  status: 'fail',
+  message:
+  'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
+};
+
+const responseFailAddBook = {
+  status: 'fail',
+  message: 'Gagal menambahkan buku. Mohon isi nama buku',
+};
+
+const responseFailAddBookInvalidPage = {
+  status: 'fail',
+  message:
+  'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
+};
+
+const responseFailGeneral = {
+  status: 'fail',
+  message: 'Buku tidak ditemukan',
+};
+
+const responseFailAddBookGeneral = {
+  status: 'fail',
+  message: 'Buku gagal ditambahkan',
+};
+
+const responseSuccessDeleteBook = {
+  status: 'success',
+  message: 'Buku berhasil dihapus',
+};
+
+const responseSuccessEditBook = {
+  status: 'success',
+  message: 'Buku berhasil diperbarui',
+};
+
 /* REUSABLE FUNCTION */
 function formattedBooks(rawBooks) {
   return rawBooks.map((bookItem) => ({
@@ -10,23 +63,23 @@ function formattedBooks(rawBooks) {
   }));
 }
 
+function getAllFormattedBooks() {
+  return {
+    books: formattedBooks(books),
+  };
+}
+
 /* HANDLER FUNCTION */
 const deleteBookHandler = (request, h) => {
   const { bookId } = request.params;
   const index = books.findIndex((book) => book.id === bookId);
   if (index === -1) {
-    const response = h.response({
-      status: 'fail',
-      message: 'Buku gagal dihapus. Id tidak ditemukan',
-    });
+    const response = h.response(responseFailInvalidId);
     response.code(404);
     return response;
   }
   books.splice(index, 1);
-  const response = h.response({
-    status: 'success',
-    message: 'Buku berhasil dihapus',
-  });
+  const response = h.response(responseSuccessDeleteBook);
   response.code(200);
   return response;
 };
@@ -45,18 +98,11 @@ const editDataBookHandler = (request, h) => {
   } = request.payload;
   const updatedAt = new Date().toISOString();
   if (!name) {
-    const response = h.response({
-      status: 'fail',
-      message: 'Gagal memperbarui buku. Mohon isi nama buku',
-    });
+    const response = h.response(responseFailInvalidName);
     response.code(400);
     return response;
   } else if (readPage > pageCount) {
-    const response = h.response({
-      status: 'fail',
-      message:
-      'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
-    });
+    const response = h.response(responseFailInvalidPage);
     response.code(400);
     return response;
   }
@@ -74,17 +120,11 @@ const editDataBookHandler = (request, h) => {
       reading,
       updatedAt,
     };
-    const response = h.response({
-      status: 'success',
-      message: 'Buku berhasil diperbarui',
-    });
+    const response = h.response(responseSuccessEditBook);
     response.code(200);
     return response;
   }
-  const response = h.response({
-    status: 'fail',
-    message: 'Gagal memperbarui buku. Id tidak ditemukan',
-  });
+  const response = h.response(responseFailEditBookInvalidId);
   response.code(404);
   return response;
 };
@@ -115,10 +155,7 @@ const getDetailBookHandler = (request, h) => {
     response.code(200);
     return response;
   }
-  const response = h.response({
-    status: 'fail',
-    message: 'Buku tidak ditemukan',
-  });
+  const response = h.response(responseFailGeneral);
   response.code(404);
   return response;
 };
@@ -133,7 +170,6 @@ const getAllBooksHandler = (request, h) => {
       const booksFilteredName = books.filter((book) => {
         const nameItemBookLowerCase = book.name.toLowerCase();
         const nameQueryBookLowerCase = name.toLowerCase();
-
         return nameItemBookLowerCase.includes(nameQueryBookLowerCase);
       });
       const response = h.response({
@@ -169,9 +205,7 @@ const getAllBooksHandler = (request, h) => {
 
       const response = h.response({
         status: 'success',
-        data: {
-          books: formattedBooks(books),
-        },
+        data: getAllFormattedBooks(),
       });
       response.code(200);
       return response;
@@ -199,18 +233,14 @@ const getAllBooksHandler = (request, h) => {
       }
       const response = h.response({
         status: 'success',
-        data: {
-          books: formattedBooks(books),
-        },
+        data: getAllFormattedBooks(),
       });
       response.code(200);
       return response;
     }
     const response = h.response({
       status: 'success',
-      data: {
-        books: formattedBooks(books),
-      },
+      data: getAllFormattedBooks(),
     });
     response.code(200);
     return response;
@@ -257,20 +287,12 @@ const addBookHandler = (request, h) => {
       updatedAt,
     };
     if (!newBook.name) {
-      const response = h.response({
-        status: 'fail',
-        message: 'Gagal menambahkan buku. Mohon isi nama buku',
-      });
-
+      const response = h.response(responseFailAddBook);
       response.code(400);
 
       return response;
     } else if (newBook.readPage > newBook.pageCount) {
-      const response = h.response({
-        status: 'fail',
-        message:
-        'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
-      });
+      const response = h.response(responseFailAddBookInvalidPage);
 
       response.code(400);
       return response;
@@ -291,20 +313,11 @@ const addBookHandler = (request, h) => {
       response.code(201);
       return response;
     }
-    const response = h.response({
-      status: 'fail',
-      message: 'Buku gagal ditambahkan',
-    });
-
+    const response = h.response(responseFailAddBookGeneral);
     response.code(500);
     return response;
   }
-
-  const response = h.response({
-    status: 'fail',
-    message: 'Buku gagal ditambahkan',
-  });
-
+  const response = h.response(responseFailAddBookGeneral);
   response.code(500);
   return response;
 };
