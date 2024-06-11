@@ -1,6 +1,16 @@
 const { nanoid } = require('nanoid');
 const books = require('./books');
 
+////// REUSABLE FUNCTION ////// 
+function fromattedBooks(books) {
+  return books.map((bookItem) => ({
+    id: bookItem.id,
+    name: bookItem.name,
+    publisher: bookItem.publisher,
+  }));
+}
+
+////// HANDLER FUNCTION ////// 
 const deleteBookHandler = (request, h) => {
   const { bookId } = request.params;
   const index = books.findIndex((book) => book.id === bookId);
@@ -129,11 +139,7 @@ const getAllBooksHandler = (request, h) => {
       const response = h.response({
         status: 'success',
         data: {
-          books: booksFilteredName.map((bookItem) => ({
-            id: bookItem.id,
-            name: bookItem.name,
-            publisher: bookItem.publisher,
-          })),
+          books: fromattedBooks(booksFilteredName),
         },
       });
       response.code(200);
@@ -144,11 +150,7 @@ const getAllBooksHandler = (request, h) => {
         const response = h.response({
           status: 'success',
           data: {
-            books: unreadingBooks.map((bookItem) => ({
-              id: bookItem.id,
-              name: bookItem.name,
-              publisher: bookItem.publisher,
-            })),
+            books: fromattedBooks(unreadingBooks),
           },
         });
         response.code(200);
@@ -158,25 +160,17 @@ const getAllBooksHandler = (request, h) => {
         const response = h.response({
           status: 'success',
           data: {
-            books: readingBooks.map((bookItem) => ({
-              id: bookItem.id,
-              name: bookItem.name,
-              publisher: bookItem.publisher,
-            })),
+            books: fromattedBooks(readingBooks),
           },
         });
         response.code(200);
         return response;
       }
-      const tempBooks = books.map((bookItem) => ({
-        id: bookItem.id,
-        name: bookItem.name,
-        publisher: bookItem.publisher,
-      }));
+
       const response = h.response({
         status: 'success',
         data: {
-          books: tempBooks,
+          books:fromattedBooks(books),
         },
       });
       response.code(200);
@@ -187,11 +181,7 @@ const getAllBooksHandler = (request, h) => {
         const response = h.response({
           status: 'success',
           data: {
-            books: unfinishedBooks.map((bookItem) => ({
-              id: bookItem.id,
-              name: bookItem.name,
-              publisher: bookItem.publisher,
-            })),
+            books: fromattedBooks(unfinishedBooks),
           },
         });
         response.code(200);
@@ -201,39 +191,25 @@ const getAllBooksHandler = (request, h) => {
         const response = h.response({
           status: 'success',
           data: {
-            books: finishedBooks.map((bookItem) => ({
-              id: bookItem.id,
-              name: bookItem.name,
-              publisher: bookItem.publisher,
-            })),
+            books: fromattedBooks(finishedBooks),
           },
         });
         response.code(200);
         return response;
       }
-      const tempBooks = books.map((bookItem) => ({
-        id: bookItem.id,
-        name: bookItem.name,
-        publisher: bookItem.publisher,
-      }));
       const response = h.response({
         status: 'success',
         data: {
-          books: tempBooks,
+          books: fromattedBooks(books),
         },
       });
       response.code(200);
       return response;
     }
-    const tempBooks = books.map((bookItem) => ({
-      id: bookItem.id,
-      name: bookItem.name,
-      publisher: bookItem.publisher,
-    }));
     const response = h.response({
       status: 'success',
       data: {
-        books: tempBooks,
+        books: fromattedBooks(books),
       },
     });
     response.code(200);
@@ -266,7 +242,6 @@ const addBookHandler = (request, h) => {
     const finished = pageCount === readPage;
     const insertedAt = new Date().toISOString();
     const updatedAt = insertedAt;
-
     const newBook = {
       id,
       name,
@@ -281,7 +256,6 @@ const addBookHandler = (request, h) => {
       insertedAt,
       updatedAt,
     };
-
     if (!newBook.name) {
       const response = h.response({
         status: 'fail',
